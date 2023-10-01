@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:step_counter/data/services/auth_service.dart';
 import 'package:step_counter/locator_service.dart';
+import 'package:step_counter/presentation/home_page/home_page_widgets/current_step_counter_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,20 +25,12 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         ],
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Step Counter'),
       ),
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Text(
-                'COUNTER',
-                style: TextStyle(fontSize: 40),
-              ),
-            )
-          ],
+          children: <Widget>[CurrentStepCounterWidget()],
         ),
       ),
     );

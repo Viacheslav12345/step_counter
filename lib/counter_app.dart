@@ -16,9 +16,16 @@ class CounterApp extends StatelessWidget {
         initialData: null,
         child: MaterialApp(
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.blueGrey,
+                primary: Colors.blueGrey,
+              ),
+              useMaterial3: true,
+              appBarTheme: AppBarTheme(
+                  titleTextStyle:
+                      TextStyle(color: Colors.grey[600], fontSize: 18)
+                  // centerTitle: true,
+                  )),
           home: const LandingPage(),
         ));
   }
