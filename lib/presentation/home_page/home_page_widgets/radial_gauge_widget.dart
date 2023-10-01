@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class RadialGaugeWidget extends StatelessWidget {
-  final String steps;
+  final int stepsToday;
   final int stepDayPlan;
   const RadialGaugeWidget({
     Key? key,
-    required this.steps,
+    required this.stepsToday,
     required this.stepDayPlan,
   }) : super(key: key);
 
@@ -31,22 +31,22 @@ class RadialGaugeWidget extends StatelessWidget {
               widget: Text.rich(
                 TextSpan(children: [
                   TextSpan(
-                    text: '$steps\n',
+                    text: '${stepsToday.toString()}\n',
                     style: Theme.of(context).textTheme.displayMedium!.copyWith(
                           color: Theme.of(context).primaryColor,
                         ),
                   ),
                   TextSpan(
-                    text: '${steps}\n',
+                    text: '/\n',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).canvasColor,
+                          color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w400,
                         ),
                   ),
                   TextSpan(
-                    text: '8000\n',
+                    text: '${stepDayPlan.toString()}\n',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w400,
                         ),
                   ),
@@ -57,7 +57,7 @@ class RadialGaugeWidget extends StatelessWidget {
           ],
           pointers: <GaugePointer>[
             RangePointer(
-              value: ((double.tryParse(steps)!) / stepDayPlan) * 100,
+              value: ((stepsToday.toDouble()) / stepDayPlan) * 100,
               color: Theme.of(context).primaryColor,
 
               // Theme.of(context).primaryColor,
