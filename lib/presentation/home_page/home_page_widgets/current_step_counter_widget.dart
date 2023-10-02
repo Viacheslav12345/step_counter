@@ -10,6 +10,10 @@ String formatDate(DateTime d) {
   return d.toString().substring(0, 10);
 }
 
+DateTime formatFromString(String d) {
+  return DateTime.parse(d);
+}
+
 class CurrentStepCounterWidget extends StatefulWidget {
   const CurrentStepCounterWidget({Key? key}) : super(key: key);
 
@@ -26,32 +30,56 @@ class _CurrentStepCounterWidgetState extends State<CurrentStepCounterWidget> {
   int stepPlan = 1000;
   String day = formatDate(DateTime.now());
   int stepsToday = 0;
+  int savedStepToday = 0;
+  int stepsPerWeek = 0;
+  int stepsAll = 0;
+  // int dif = 0;
 
-  Future<int> getStepsToday() async {
-    stepsToday = await sl<Repository>().getCurrentCountStepsPerDay(day);
+  Future<int> getSteps() async {
+    savedStepToday =
+        await sl<Repository>().getCurrentCountStepsPerDay(day) ?? 0;
+
+    final Map<String, int> stepsAllTime =
+        await sl<Repository>().getCountAllSteps();
+    DateTime today = DateTime.now();
+    Map<String, int> listLastSevenDays = {};
+    listLastSevenDays.addEntries(stepsAllTime.entries.where((element) =>
+        today.difference(formatFromString(element.key)).inDays < 7));
+    // dif = today.difference(formatFromString('2023-09-20')).inDays;
+
+    stepsPerWeek = listLastSevenDays.isNotEmpty
+        ? listLastSevenDays.values.reduce((value, element) => value + element)
+        : 0;
+
+    stepsAll = stepsAllTime.isNotEmpty
+        ? stepsAllTime.values.reduce((value, element) => value + element)
+        : 0;
+
+    return stepsAll;
+  }
+
+  void setStepsToday() {
+    if (savedStepToday > _steps) {
+      stepsToday = _steps + savedStepToday;
+    } else {
+      stepsToday = _steps;
+    }
+
+    sl<Repository>().setCurrentCountSteps(day, stepsToday);
     setState(() {});
-
-    return stepsToday;
   }
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    getStepsToday();
+    getSteps().then((value) => setStepsToday());
   }
 
   void onStepCount(StepCount event) {
     print(event);
-    setState(() {
-      _steps = event.steps;
-      if (_steps > stepsToday) {
-        stepsToday = _steps;
-      }
-      day = formatDate(event.timeStamp);
-
-      sl<Repository>().setCurrentCountSteps(day, _steps);
-    });
+    _steps = event.steps;
+    setStepsToday();
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
@@ -71,10 +99,6 @@ class _CurrentStepCounterWidgetState extends State<CurrentStepCounterWidget> {
 
   void onStepCountError(error) {
     print('onStepCountError: $error');
-    // setState(() {
-    // _steps = '0';
-    // 'Step Count not available';
-    // });
   }
 
   void initPlatformState() async {
@@ -93,31 +117,53 @@ class _CurrentStepCounterWidgetState extends State<CurrentStepCounterWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: 250,
-            child: RadialGaugeWidget(
-              stepDayPlan: stepPlan,
-              stepsToday: (stepsToday > _steps) ? stepsToday : _steps,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 250,
+              child: RadialGaugeWidget(
+                stepDayPlan: stepPlan,
+                stepsToday: stepsToday,
+              ),
             ),
-          ),
-          Icon(
-            _status == 'walking'
-                ? Icons.directions_walk
-                : _status == 'stopped'
-                    ? Icons.accessibility_new
-                    : Icons.error,
-            size: 70,
-            color: _status == 'walking'
-                ? Colors.green[200]
-                : _status == 'stopped'
-                    ? const Color.fromARGB(255, 140, 206, 245)
-                    : Colors.transparent,
-          ),
-          const Expanded(child: AchievementsWidget())
-        ],
+            Icon(
+              _status == 'walking'
+                  ? Icons.directions_walk
+                  : _status == 'stopped'
+                      ? Icons.accessibility_new
+                      : Icons.error,
+              size: 70,
+              color: _status == 'walking'
+                  ? Colors.green[200]
+                  : _status == 'stopped'
+                      ? const Color.fromARGB(255, 140, 206, 245)
+                      : Colors.transparent,
+            ),
+            const Divider(),
+            Expanded(
+                child: FutureBuilder(
+                    future: getSteps(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.hasData) {
+                        return AchievementsWidget(
+                          stepsAll: stepsAll,
+                          stepsPerWeek: stepsPerWeek,
+                          stepsToday: stepsToday,
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.blueGrey,
+                          ),
+                        );
+                      }
+                    }))
+          ],
+        ),
       ),
     );
   }
