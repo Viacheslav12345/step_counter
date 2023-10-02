@@ -14,8 +14,8 @@ class AuthPage extends StatefulWidget {
 class _AuthScreenState extends State<AuthPage> {
   bool showLogin = true;
 
-  final loginTextController = TextEditingController(text: "test@ukr.net");
-  final passwordTextController = TextEditingController(text: "12345qweasd");
+  final loginTextController = TextEditingController();
+  final passwordTextController = TextEditingController();
 
   bool _isAuthProgress = false;
   bool get canStartAuth => !_isAuthProgress;

@@ -35,6 +35,13 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
     super.initState();
 
     getAllAchievementsAndPrizes().then((value) => showPrize(context));
+    // setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    showPrize(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -133,8 +140,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[1].title}',
               imageUrl: listAchievements[1].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[1].title, listAchievements[1].point);
+          sl<Repository>().updatePrize(
+              listAchievements[1].title, listAchievements[1].point);
           setState(() {});
         }
       } else if (widget.stepsToday >= 5000 && widget.stepsToday <= 10000) {
@@ -143,8 +150,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[2].title}',
               imageUrl: listAchievements[2].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[2].title, listAchievements[2].point);
+          sl<Repository>().updatePrize(
+              listAchievements[2].title, listAchievements[2].point);
           setState(() {});
         }
       } else if (widget.stepsToday >= 10000) {
@@ -153,8 +160,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[3].title}',
               imageUrl: listAchievements[3].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[3].title, listAchievements[3].point);
+          sl<Repository>().updatePrize(
+              listAchievements[3].title, listAchievements[3].point);
           setState(() {});
         }
       } else if (widget.stepsPerWeek >= 3000 && widget.stepsPerWeek <= 10000) {
@@ -163,8 +170,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[4].title}',
               imageUrl: listAchievements[4].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[4].title, listAchievements[4].point);
+          sl<Repository>().updatePrize(
+              listAchievements[4].title, listAchievements[4].point);
           setState(() {});
         }
       } else if (widget.stepsPerWeek >= 10000 && widget.stepsPerWeek <= 20000) {
@@ -173,8 +180,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[5].title}',
               imageUrl: listAchievements[5].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[5].title, listAchievements[5].point);
+          sl<Repository>().updatePrize(
+              listAchievements[5].title, listAchievements[5].point);
           setState(() {});
         }
       } else if (widget.stepsPerWeek >= 20000) {
@@ -183,8 +190,8 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
               title: 'Congrats! You get prize for ${listAchievements[6].title}',
               imageUrl: listAchievements[6].image,
               context: context);
-          sl<Repository>()
-              .setPrize(listAchievements[6].title, listAchievements[6].point);
+          sl<Repository>().updatePrize(
+              listAchievements[6].title, listAchievements[6].point);
           setState(() {});
         }
       }

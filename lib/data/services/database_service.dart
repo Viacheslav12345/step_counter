@@ -16,21 +16,28 @@ class DatabaseService {
   Future<void> setOrUpdateCurrentCountSteps(String day, int count) async {
     await _stepsCountPerDayCollection
         .doc(sl<FirebaseAuth>().currentUser?.uid)
-        .update({day: count});
+        .set({day: count});
   }
 
-  Future<void> setPrize(String prize, int point) async {
+  Future<void> updatePrize(String prize, int point) async {
     await _prizeCollection
         .doc(sl<FirebaseAuth>().currentUser?.uid)
         .update({prize: point});
   }
 
+  Future<void> setPrize(String prize, int point) async {
+    await _prizeCollection
+        .doc(sl<FirebaseAuth>().currentUser?.uid)
+        .set({prize: point});
+  }
+
   Future<Map<String, int>> getPrizes() async {
     Map<String, int> listPrizes = {};
-    var snapshot = await _prizeCollection.get();
-    for (var element in snapshot.docs) {
-      listPrizes.addAll(element
-          .data()
+    var snapshot =
+        await _prizeCollection.doc(sl<FirebaseAuth>().currentUser?.uid).get();
+    if (snapshot.data() != null) {
+      listPrizes.addAll(snapshot
+          .data()!
           .map((key, value) => MapEntry<String, int>(key.toString(), value)));
     }
     return listPrizes;
@@ -38,24 +45,36 @@ class DatabaseService {
 
   Future<Map<String, int>> getCountAllSteps() async {
     Map<String, int> listStepsPerDate = {};
-    var snapshot = await _stepsCountPerDayCollection.get();
-    for (var element in snapshot.docs) {
-      listStepsPerDate.addAll(element
-          .data()
+    var snapshot = await _stepsCountPerDayCollection
+        .doc(sl<FirebaseAuth>().currentUser?.uid)
+        .get();
+    if (snapshot.data() != null) {
+      listStepsPerDate.addAll(snapshot
+          .data()!
           .map((key, value) => MapEntry<String, int>(key.toString(), value)));
     }
     return listStepsPerDate;
   }
 
   Future<int?> getCurrentCountStepsPerDay(String day) async {
-    int? stepsToday = await _stepsCountPerDayCollection
+    int? stepsToday = 0;
+    var data = await _stepsCountPerDayCollection
         .doc(sl<FirebaseAuth>().currentUser?.uid)
-        .get()
-        .then((value) => value
-            .data()!
-            .entries
-            .firstWhereOrNull((element) => element.key == day)
-            ?.value);
+        .get();
+    if (data.data() != null) {
+      data.data()!.entries.firstWhereOrNull(
+                    (element) => element.key == day,
+                  ) !=
+              null
+          ? stepsToday = data
+              .data()!
+              .entries
+              .firstWhereOrNull(
+                (element) => element.key == day,
+              )!
+              .value
+          : 0;
+    }
     return stepsToday;
   }
 

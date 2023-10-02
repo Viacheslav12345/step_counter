@@ -5,6 +5,7 @@ import 'package:step_counter/data/models/person.dart';
 import 'package:step_counter/data/services/auth_service.dart';
 import 'package:step_counter/locator_service.dart';
 import 'package:step_counter/presentation/achivement_detail_page.dart';
+import 'package:step_counter/presentation/home_page/home_page.dart';
 import 'package:step_counter/presentation/landing_page.dart';
 
 class CounterApp extends StatelessWidget {
@@ -31,6 +32,7 @@ class CounterApp extends StatelessWidget {
                   )),
           routes: {
             '/': (context) => const LandingPage(),
+            '/home_page': (context) => const HomePage(),
             '/achievement_detail_screen': (context) {
               final arguments = ModalRoute.of(context)?.settings.arguments;
               if (arguments is Achievement) {

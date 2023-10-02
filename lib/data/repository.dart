@@ -8,6 +8,7 @@ abstract class Repository {
   Future<int?> getCurrentCountStepsPerDay(String day);
   Future<List<Achievement>> getAllAchievements();
   Future<void> setPrize(String prize, int point);
+  Future<void> updatePrize(String prize, int point);
   Future<Map<String, int>> getPrizes();
 }
 
@@ -29,9 +30,9 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<int?> getCurrentCountStepsPerDay(String currentDay) async {
+    int? steps = 0;
     try {
-      final int? steps =
-          await databaseService.getCurrentCountStepsPerDay(currentDay);
+      steps = await databaseService.getCurrentCountStepsPerDay(currentDay) ?? 0;
       return steps;
     } on FirebaseException {
       return 0;
@@ -57,6 +58,11 @@ class RepositoryImpl implements Repository {
   @override
   Future<void> setPrize(String prize, int point) async {
     await databaseService.setPrize(prize, point);
+  }
+
+  @override
+  Future<void> updatePrize(String prize, int point) async {
+    await databaseService.updatePrize(prize, point);
   }
 
   @override
