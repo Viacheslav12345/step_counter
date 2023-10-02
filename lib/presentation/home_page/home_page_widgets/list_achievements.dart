@@ -3,6 +3,7 @@ import 'package:step_counter/data/models/achievement.dart';
 import 'package:step_counter/data/repository.dart';
 import 'package:step_counter/locator_service.dart';
 import 'package:step_counter/common/show_dialog.dart';
+import 'package:step_counter/presentation/achivement_detail_page.dart';
 
 class AchievementsWidget extends StatefulWidget {
   final int stepsPerWeek, stepsAll, stepsToday;
@@ -53,9 +54,10 @@ class _AchievementsWidgetState extends State<AchievementsWidget> {
                     listPrizes.containsKey(listAchievements[index].title);
                 return InkWell(
                   onTap: () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (context) => AchievementDetailsPage(
-                    //         listAchievements[index])));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AchievementDetailsPage(
+                              achievement: listAchievements[index],
+                            )));
                   },
                   child: Card(
                       child: Container(
